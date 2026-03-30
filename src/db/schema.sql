@@ -56,8 +56,8 @@ CREATE TABLE IF NOT EXISTS scrape_sources (
   enabled BOOLEAN DEFAULT true
 );
 
-CREATE INDEX idx_changes_service ON changes(service_id);
-CREATE INDEX idx_changes_type ON changes(type);
-CREATE INDEX idx_changes_detected ON changes(detected_at DESC);
-CREATE INDEX idx_price_history_service ON price_history(service_id);
-CREATE INDEX idx_services_category ON services(category);
+CREATE INDEX IF NOT EXISTS idx_changes_service ON changes(service_id);
+CREATE INDEX IF NOT EXISTS idx_changes_type ON changes(type);
+CREATE INDEX IF NOT EXISTS idx_changes_detected ON changes(detected_at DESC);
+CREATE INDEX IF NOT EXISTS idx_price_history_service ON price_history(service_id);
+CREATE INDEX IF NOT EXISTS idx_services_category ON services(category);
