@@ -23,6 +23,11 @@ app.use(express.json());
 app.use('/api', apiRoutes);
 app.use('/api', seedRoutes);
 
+
+// Privacy policy page
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'privacy-policy.html'));
+});
 // Root
 app.get('/', (req, res) => {
   res.json({
