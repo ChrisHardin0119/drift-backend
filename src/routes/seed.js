@@ -159,7 +159,7 @@ router.post('/seed', async (req, res) => {
       // Try exact match first, then partial match (e.g. "Netflix" matches "Netflix (Standard)")
       let serviceId = serviceIdMap[change.service];
       if (!serviceId) {
-        const matchKey = Object.keys(serviceIdMap).find(k => k.startsWith(change.service + ' ') || k.startsWith(change.service + '(') || k === change.service);
+        const baseName = change.service.split(' (')[0]; const matchKey = Object.keys(serviceIdMap).find(k => k === change.service || k.startsWith(change.service + ' ') || k.startsWith(baseName + ' ') || k.startsWith(baseName + '('));
         if (matchKey) serviceId = serviceIdMap[matchKey];
       }
       
@@ -170,7 +170,7 @@ router.post('/seed', async (req, res) => {
 
       try {
         await db.query(
-          `INSERT INTO changes (service_id, type, severity, title, description, impact, old_value, new_value, date)
+          `INSERT INTO changes (service_id, type, severity, title, description, impact, old_value, new_value, effective_date)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
           [serviceId, change.type, change.severity, change.title, change.description, 
            change.impact, change.oldValue || null, change.newValue || null, change.date]
