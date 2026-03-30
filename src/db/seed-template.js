@@ -1,4 +1,4 @@
-﻿// Seed script: loads schema + all services + historical changes into the database
+// Seed script: loads schema + all services + historical changes into the database
 const fs = require('fs');
 const path = require('path');
 const db = require('./index');

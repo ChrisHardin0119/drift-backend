@@ -1,4 +1,4 @@
-﻿// Drift Scraper: checks pricing pages and news feeds for subscription changes
+// Drift Scraper: checks pricing pages and news feeds for subscription changes
 // Covers: price changes, policy changes, feature removals, free tier changes, etc.
 const cheerio = require('cheerio');
 const db = require('../db');

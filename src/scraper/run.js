@@ -1,4 +1,4 @@
-﻿// Run the scraper manually: node src/scraper/run.js
+// Run the scraper manually: node src/scraper/run.js
 require('dotenv').config();
 const { runScraper } = require('./index');
 const db = require('../db');

@@ -1,4 +1,4 @@
-﻿// Drift Backend Server
+// Drift Backend Server
 // Serves the API and runs the scraper on a schedule
 const express = require('express');
 const cors = require('cors');

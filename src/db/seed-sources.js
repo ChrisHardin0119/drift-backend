@@ -1,4 +1,4 @@
-﻿// Seeds the scrape_sources table with known pricing page URLs
+// Seeds the scrape_sources table with known pricing page URLs
 const db = require('./index');
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 

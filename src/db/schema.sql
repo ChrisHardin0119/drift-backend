@@ -1,4 +1,4 @@
-﻿-- Drift Backend Database Schema
+-- Drift Backend Database Schema
 -- Stores subscription services, pricing history, and all types of changes
 
 CREATE TABLE IF NOT EXISTS services (

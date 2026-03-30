@@ -1,4 +1,4 @@
-﻿// Seed script: reads service data from the Drift app's existing TS files and loads into DB
+// Seed script: reads service data from the Drift app's existing TS files and loads into DB
 const fs = require('fs');
 const path = require('path');
 const db = require('./index');
