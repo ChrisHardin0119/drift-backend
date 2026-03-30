@@ -150,7 +150,7 @@ router.post('/seed', async (req, res) => {
           servicesInserted++;
         }
       } catch (err) {
-        console.error(Error inserting service ${service.name}:, err.message);
+        console.error(`Error inserting service ${service.name}:`, err.message);
       }
     }
 
