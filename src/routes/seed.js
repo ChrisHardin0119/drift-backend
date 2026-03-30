@@ -154,9 +154,14 @@ router.post('/seed', async (req, res) => {
       }
     }
 
-    // Insert historical changes, looking up service_id by name
+    // Insert historical changes, looking up service_id by name (partial match)
     for (const change of historicalChanges) {
-      const serviceId = serviceIdMap[change.service];
+      // Try exact match first, then partial match (e.g. "Netflix" matches "Netflix (Standard)")
+      let serviceId = serviceIdMap[change.service];
+      if (!serviceId) {
+        const matchKey = Object.keys(serviceIdMap).find(k => k.startsWith(change.service + ' ') || k.startsWith(change.service + '(') || k === change.service);
+        if (matchKey) serviceId = serviceIdMap[matchKey];
+      }
       
       if (!serviceId) {
         console.warn(`Service not found for change: ${change.service}`);
