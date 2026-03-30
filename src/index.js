@@ -8,6 +8,7 @@ const path = require('path');
 require('dotenv').config();
 
 const apiRoutes = require('./routes/api');
+const seedRoutes = require('./routes/seed');
 const { runScraper } = require('./scraper');
 const db = require('./db');
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api', apiRoutes);
+app.use('/api', seedRoutes);
 
 // Root
 app.get('/', (req, res) => {
