@@ -84,7 +84,7 @@ const SERVICE_NAMES = [
   'nordvpn', 'expressvpn', 'surfshark',
   'tinder', 'bumble', 'hinge',
   'icloud', 'google one', 'dropbox',
-  'ring', 'nest', 'costco', 'walmart+',
+  'ring doorbell', 'google nest', 'costco membership', 'walmart+',
   'starz', 'amc+', 'crunchyroll', 'discovery+',
   'headspace', 'calm', 'peloton', 'strava',
   'sling', 'fubo', 'philo', 'directv',
@@ -112,14 +112,25 @@ async function checkNewsFeeds() {
         const combined = title + ' ' + description;
 
         // Check if it mentions a service we track AND contains change keywords
-        const matchedService = SERVICE_NAMES.find(svc => combined.includes(svc));
+        // Use word boundaries to avoid false matches
+        const matchedService = SERVICE_NAMES.find(svc => {
+          const escaped = svc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+          return regex.test(combined);
+        });
         const matchedKeyword = CHANGE_KEYWORDS.find(kw => combined.includes(kw));
 
-        if (matchedService && matchedKeyword) {
+        // Title must also mention the service to avoid false positives
+        const titleHasService = matchedService ? (() => {
+          const escaped = matchedService.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return new RegExp('\\b' + escaped + '\\b', 'i').test(title);
+        })() : false;
+
+        if (matchedService && matchedKeyword && titleHasService) {
           newArticles.push({
             service: matchedService,
             title: $(item).find('title').text(),
-            description: description.substring(0, 500),
+            description: description.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&#038;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\s+/g, ' ').trim().substring(0, 500),
             url: link,
             date: pubDate ? new Date(pubDate) : new Date(),
             source: feed.name,
