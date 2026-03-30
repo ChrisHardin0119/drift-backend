@@ -134,14 +134,14 @@ router.post('/seed', async (req, res) => {
       
       try {
         const result = await db.query(
-          INSERT INTO services (slug, name, category, current_price, billing_cycle, color)
+          `INSERT INTO services (slug, name, category, current_price, billing_cycle, color)
            VALUES ($1, $2, $3, $4, $5, $6)
            ON CONFLICT (slug) DO UPDATE 
            SET name = EXCLUDED.name, 
                category = EXCLUDED.category, 
                current_price = EXCLUDED.current_price, 
                color = EXCLUDED.color
-           RETURNING id, name,
+           RETURNING id, name`,
           [slug, service.name, service.category, service.defaultPrice, 'monthly', service.color]
         );
         
@@ -159,20 +159,20 @@ router.post('/seed', async (req, res) => {
       const serviceId = serviceIdMap[change.service];
       
       if (!serviceId) {
-        console.warn(Service not found for change: ${change.service});
+        console.warn(`Service not found for change: ${change.service}`);
         continue;
       }
 
       try {
         await db.query(
-          INSERT INTO changes (service_id, type, severity, title, description, impact, old_value, new_value, date)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9),
+          `INSERT INTO changes (service_id, type, severity, title, description, impact, old_value, new_value, date)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
           [serviceId, change.type, change.severity, change.title, change.description, 
            change.impact, change.oldValue || null, change.newValue || null, change.date]
         );
         changesInserted++;
       } catch (err) {
-        console.error(Error inserting change ${change.id}:, err.message);
+        console.error(`Error inserting change ${change.id}:`, err.message);
       }
     }
 
