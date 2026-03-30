@@ -1,8 +1,8 @@
-const express = require('express');
+﻿const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-// GET /api/services — list all services, optionally filter by category
+// GET /api/services â€” list all services, optionally filter by category
 router.get('/services', async (req, res) => {
   try {
     const { category } = req.query;
@@ -20,7 +20,7 @@ router.get('/services', async (req, res) => {
   }
 });
 
-// GET /api/services/:slug — get a single service with its price history
+// GET /api/services/:slug â€” get a single service with its price history
 router.get('/services/:slug', async (req, res) => {
   try {
     const svc = await db.query('SELECT * FROM services WHERE slug = $1', [req.params.slug]);
@@ -42,7 +42,7 @@ router.get('/services/:slug', async (req, res) => {
   }
 });
 
-// GET /api/changes — recent changes feed (the main feed for the app)
+// GET /api/changes â€” recent changes feed (the main feed for the app)
 router.get('/changes', async (req, res) => {
   try {
     const { type, severity, limit = 50, offset = 0 } = req.query;
@@ -79,7 +79,7 @@ router.get('/changes', async (req, res) => {
   }
 });
 
-// GET /api/changes/recent — last 7 days of changes (dashboard widget)
+// GET /api/changes/recent â€” last 7 days of changes (dashboard widget)
 router.get('/changes/recent', async (req, res) => {
   try {
     const result = await db.query(`
@@ -96,7 +96,7 @@ router.get('/changes/recent', async (req, res) => {
   }
 });
 
-// GET /api/stats — dashboard stats
+// GET /api/stats â€” dashboard stats
 router.get('/stats', async (req, res) => {
   try {
     const [priceHikes, policyChanges, totalServices] = await Promise.all([
@@ -115,7 +115,7 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// GET /api/categories — list all categories with service counts
+// GET /api/categories â€” list all categories with service counts
 router.get('/categories', async (req, res) => {
   try {
     const result = await db.query(`
@@ -129,7 +129,7 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// GET /api/health — health check
+// GET /api/health â€” health check
 router.get('/health', async (req, res) => {
   try {
     await db.query('SELECT 1');
@@ -139,4 +139,18 @@ router.get('/health', async (req, res) => {
   }
 });
 
+// DELETE /api/changes/cleanup - remove scraped news entries that may be irrelevant
+router.delete('/changes/cleanup', async (req, res) => {
+  try {
+    const key = req.headers['x-seed-key'];
+    if (key !== 'drift-seed-2024') return res.status(403).json({ error: 'Forbidden' });
+    const result = await db.query('DELETE FROM changes WHERE effective_date IS NULL');
+    res.json({ deleted: result.rowCount });
+  } catch (err) {
+    console.error('Error cleaning up:', err);
+    res.status(500).json({ error: 'Failed to clean up' });
+  }
+});
+
 module.exports = router;
+
