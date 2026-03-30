@@ -1,3 +1,7 @@
-﻿node_modules/
+node_modules/
 .env
 *.log
+gh-log.txt
+git-log.txt
+railway-install.txt
+railway-login.txt
